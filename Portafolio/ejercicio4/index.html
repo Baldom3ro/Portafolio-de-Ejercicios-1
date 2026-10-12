@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta
+      name="description"
+      content="Ejercicio 4: Cache API y Estrategia de Caché Estática (Cache-First)"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <title>Ejercicio 4 - Cache API y Cache-First</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <img src="./icons/icon-192.png" alt="Logo de la app" />
+          <div>
+            <p class="eyebrow">PWA</p>
+            <h1>Ejercicio 4</h1>
+          </div>
+        </div>
+
+        <div class="service-status" aria-live="polite">
+          <span class="status-dot"></span>
+          <span id="sw-status-label">Esperando registro del Service Worker</span>
+        </div>
+      </header>
+
+      <div class="layout">
+        <aside class="sidebar">
+          <nav class="nav-panel" aria-label="Navegación principal">
+            <button class="nav-item active" type="button" data-view="view-home">Inicio</button>
+            <button class="nav-item" type="button" data-view="view-install">Caché Install</button>
+            <button class="nav-item" type="button" data-view="view-lifecycle">Activación</button>
+            <button class="nav-item" type="button" data-view="view-offline">Cache-First</button>
+          </nav>
+
+          <div class="sidebar-card">
+            <p class="card-label">Estado</p>
+            <strong id="sw-state">No registrado</strong>
+          </div>
+        </aside>
+
+        <main class="content">
+          <!-- Vista Inicio -->
+          <div id="view-home" class="view-section">
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Cache API</p>
+                <h2>Estrategia Cache-First</h2>
+              </div>
+              <p>
+                Este ejercicio implementa almacenamiento en caché estática mediante la Cache API y la estrategia 
+                <strong>Cache-First</strong>, permitiendo que la aplicación cargue instantáneamente y funcione offline.
+              </p>
+              <div class="actions">
+                <button id="reload-btn" class="primary-btn" type="button">Recargar</button>
+                <button id="update-btn" class="secondary-btn" type="button">Actualizar SW</button>
+              </div>
+            </section>
+
+            <section class="stats-grid">
+              <article class="card stat-card">
+                <p class="card-label">Paso 1</p>
+                <h3>install</h3>
+                <p>Abre el almacén <code>ejercicio4-cache-v1</code> y precarga el App Shell crítico.</p>
+              </article>
+
+              <article class="card stat-card">
+                <p class="card-label">Paso 2</p>
+                <h3>activate</h3>
+                <p>Limpia versiones anteriores de caché y toma control inmediato de los clientes.</p>
+              </article>
+
+              <article class="card stat-card">
+                <p class="card-label">Paso 3</p>
+                <h3>fetch (Cache-First)</h3>
+                <p>Busca primero en caché; si no existe, consulta la red y almacena una copia.</p>
+              </article>
+            </section>
+
+            <section class="card instructions">
+              <h3>Instrucciones de validación manual en DevTools</h3>
+              <ol>
+                <li>Abre la aplicación en un servidor local (HTTP/HTTPS).</li>
+                <li>Abre las DevTools y dirígete a la pestaña <strong>Application</strong>.</li>
+                <li>Expande la sección <strong>Cache Storage</strong> para verificar el caché <code>ejercicio4-cache-v1</code>.</li>
+                <li>Comprueba que todos los recursos estáticos estén precargados.</li>
+                <li>Selecciona <strong>Offline</strong> en la pestaña Network y recarga la página para comprobar el funcionamiento offline.</li>
+              </ol>
+            </section>
+          </div>
+
+          <!-- Vista Instalación -->
+          <div id="view-install" class="view-section" hidden>
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Almacenamiento Estático</p>
+                <h2>Precarga en Evento Install</h2>
+              </div>
+              <p>
+                Durante el evento <code>install</code>, el Service Worker abre la Cache API y descarga todos los recursos 
+                necesarios del App Shell para que estén disponibles de forma local.
+              </p>
+              <div class="code-preview">const CACHE_NAME = 'ejercicio4-cache-v1';
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(APP_SHELL);
+    })
+  );
+});</div>
+              <div class="actions">
+                <button id="check-reg-btn" class="primary-btn" type="button">Verificar registro y caché</button>
+              </div>
+              <p id="reg-info" class="card-label" style="font-size:0.9rem; color:var(--text);"></p>
+            </section>
+          </div>
+
+          <!-- Vista Ciclo de vida -->
+          <div id="view-lifecycle" class="view-section" hidden>
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Limpieza y Control</p>
+                <h2>Evento Activate y Limpieza</h2>
+              </div>
+              <p>
+                El evento <code>activate</code> se encarga de purgar versiones antiguas de la caché para liberar espacio 
+                y evitar conflictos con recursos obsoletos.
+              </p>
+              <div class="lifecycle-stepper">
+                <div class="step-box" id="step-registering">
+                  <h4>1. Registro</h4>
+                  <p>El navegador registra sw.js.</p>
+                </div>
+                <div class="step-box" id="step-installing">
+                  <h4>2. Precarga</h4>
+                  <p>Guarda archivos en Cache Storage.</p>
+                </div>
+                <div class="step-box" id="step-waiting">
+                  <h4>3. Salto</h4>
+                  <p>skipWaiting() activa el worker.</p>
+                </div>
+                <div class="step-box" id="step-activating">
+                  <h4>4. Purga</h4>
+                  <p>Elimina cachés viejas en activate.</p>
+                </div>
+                <div class="step-box" id="step-active">
+                  <h4>5. Control</h4>
+                  <p>clients.claim() y Cache-First activo.</p>
+                </div>
+              </div>
+              <div class="actions">
+                <button id="inspect-lifecycle-btn" class="primary-btn" type="button">Comprobar estado del Worker</button>
+              </div>
+              <p id="lifecycle-info" class="card-label" style="font-size:0.9rem; color:var(--text);"></p>
+            </section>
+          </div>
+
+          <!-- Vista Offline -->
+          <div id="view-offline" class="view-section" hidden>
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Estrategia de Intercepción</p>
+                <h2>Cache-First en Evento Fetch</h2>
+              </div>
+              <p>
+                Cada petición HTTP pasa por el evento <code>fetch</code>. Con la estrategia <strong>Cache-First</strong>, 
+                la respuesta se sirve inmediatamente desde la caché si está disponible, reduciendo la latencia a cero.
+              </p>
+              <div class="card" style="background: rgba(15,23,42,0.6);">
+                <p class="card-label">Estado de conexión</p>
+                <p id="network-status" style="font-size: 1.1rem; margin: 0;"></p>
+              </div>
+              <div class="actions">
+                <button id="test-cache-btn" class="primary-btn" type="button">Probar lectura desde Caché</button>
+              </div>
+              <p id="test-fetch-result" class="card-label" style="font-size:0.9rem; color:var(--text);"></p>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
