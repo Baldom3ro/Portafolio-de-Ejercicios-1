@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>Sin conexión - Modo Offline</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="offline-page">
+      <div class="offline-card">
+        <div class="offline-icon">📡</div>
+        <h1>Estás sin conexión</h1>
+        <p class="offline-subtitle">
+          Hemos detectado que no hay acceso a internet en este momento.
+        </p>
+        <div class="offline-details">
+          <p>
+            La aplicación funciona en <strong>modo offline</strong> gracias al
+            Service Worker y la estrategia de caché. Los recursos del App Shell
+            siguen disponibles.
+          </p>
+          <ul>
+            <li>Recursos precargados en caché siguen accesibles.</li>
+            <li>Las vistas ya visitadas permanecen disponibles.</li>
+            <li>La página se recupera automáticamente al restablecer la conexión.</li>
+          </ul>
+        </div>
+        <button id="retry-btn" class="primary-btn" type="button">
+          Reintentar conexión
+        </button>
+        <p id="retry-status" class="retry-status"></p>
+      </div>
+    </div>
+    <script src="offline.js"></script>
+  </body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta
+      name="description"
+      content="Ejercicio 5: Interceptor de Peticiones y Manejo de Estado Offline"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <title>Ejercicio 5 - Offline Fallback</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <img src="./icons/icon-192.png" alt="Logo de la app" />
+          <div>
+            <p class="eyebrow">PWA</p>
+            <h1>Ejercicio 5</h1>
+          </div>
+        </div>
+
+        <div class="service-status" aria-live="polite">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="sw-status-label">Esperando registro del Service Worker</span>
+        </div>
+      </header>
+
+      <div class="layout">
+        <aside class="sidebar">
+          <nav class="nav-panel" aria-label="Navegación principal">
+            <button class="nav-item active" type="button" data-view="view-home">Inicio</button>
+            <button class="nav-item" type="button" data-view="view-offline">Offline</button>
+            <button class="nav-item" type="button" data-view="view-instructions">Validación</button>
+          </nav>
+
+          <div class="sidebar-card">
+            <p class="card-label">Estado</p>
+            <strong id="sw-state">No registrado</strong>
+          </div>
+        </aside>
+
+        <main class="content">
+          <!-- Vista Inicio -->
+          <div id="view-home" class="view-section">
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Interceptor de Peticiones</p>
+                <h2>Manejo de Estado Offline</h2>
+              </div>
+              <p>
+                Este ejercicio implementa un <strong>fallback offline</strong>: cuando una petición
+                falla por falta de conexión, el Service Worker sirve la página
+                <code>offline.html</code> precargada en el evento install.
+              </p>
+              <div class="actions">
+                <button id="reload-btn" class="primary-btn" type="button">Recargar</button>
+                <button id="update-btn" class="secondary-btn" type="button"> Actualizar SW</button>
+              </div>
+            </section>
+
+            <section class="stats-grid">
+              <article class="card stat-card">
+                <p class="card-label">Paso 1</p>
+                <h3>install</h3>
+                <p>Precarga <code>offline.html</code> junto con el App Shell.</p>
+              </article>
+
+              <article class="card stat-card">
+                <p class="card-label">Paso 2</p>
+                <h3>activate</h3>
+                <p>Limpia cachés antiguas y toma control de los clientes.</p>
+              </article>
+
+              <article class="card stat-card">
+                <p class="card-label">Paso 3</p>
+                <h3>fetch + catch</h3>
+                <p>Si la red falla, sirve la vista de fallback offline.</p>
+              </article>
+            </section>
+          </div>
+
+          <!-- Vista Offline -->
+          <div id="view-offline" class="view-section" hidden>
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Fallback Personalizado</p>
+                <h2>Vista Offline</h2>
+              </div>
+              <p>
+                La página <code>offline.html</code> es una vista independiente que se
+                precarga durante el <code>install</code> y se sirve cuando el
+                interceptor detecta que la red está inaccesible.
+              </p>
+              <div class="card" style="background: rgba(15,23,42,0.6);">
+                <p class="card-label">Estado de conexión</p>
+                <p id="network-status" style="font-size: 1.1rem; margin: 0;"></p>
+              </div>
+              <div class="actions">
+                <button id="test-offline-btn" class="primary-btn" type="button">
+                  Simular petición sin conexión
+                </button>
+              </div>
+              <p id="test-offline-result" class="card-label" style="font-size:0.9rem; color:var(--text);"></p>
+            </section>
+          </div>
+
+          <!-- Vista Validación -->
+          <div id="view-instructions" class="view-section" hidden>
+            <section class="card instructions">
+              <h3>Instrucciones de validación manual en DevTools</h3>
+              <ol>
+                <li>Abre la aplicación en un servidor local (HTTP/HTTPS).</li>
+                <li>Registra el Service Worker y espera a que el caché <code>ejercicio5-cache-v1</code> se complete.</li>
+                <li>Ve a <strong>Application &gt; Cache Storage</strong> y comprueba que <code>offline.html</code> esté precargado.</li>
+                <li>En la pestaña <strong>Network</strong>, marca <strong>Offline</strong>.</li>
+                <li>Recarga la página o navega a un recurso no cacheado y verifica que aparezca la pantalla de fallback.</li>
+                <li>Desactiva <strong>Offline</strong> y vuelve a conectar para confirmar que la app se recupera.</li>
+              </ol>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
