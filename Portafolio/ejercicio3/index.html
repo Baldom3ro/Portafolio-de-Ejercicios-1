@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta
+      name="description"
+      content="Ejercicio 3: registro y ciclo de vida del Service Worker"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <title>Ejercicio 3 - Service Worker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <img src="./icons/icon-192.png" alt="Logo de la app" />
+          <div>
+            <p class="eyebrow">PWA</p>
+            <h1>Ejercicio 3</h1>
+          </div>
+        </div>
+
+        <div class="service-status" aria-live="polite">
+          <span class="status-dot"></span>
+          <span id="sw-status-label">Esperando registro del Service Worker</span>
+        </div>
+      </header>
+
+      <div class="layout">
+        <aside class="sidebar">
+          <nav class="nav-panel" aria-label="Navegación principal">
+            <button class="nav-item active" type="button" data-view="view-home">Inicio</button>
+            <button class="nav-item" type="button" data-view="view-install">Instalación</button>
+            <button class="nav-item" type="button" data-view="view-lifecycle">Ciclo de vida</button>
+            <button class="nav-item" type="button" data-view="view-offline">Offline</button>
+          </nav>
+
+          <div class="sidebar-card">
+            <p class="card-label">Estado</p>
+            <strong id="sw-state">No registrado</strong>
+          </div>
+        </aside>
+
+        <main class="content">
+          <!-- Vista Inicio -->
+          <div id="view-home" class="view-section">
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Service Worker</p>
+                <h2>Registro y ciclo de vida</h2>
+              </div>
+              <p>
+                Esta página demuestra cómo se registra un worker, cómo se precarga el app shell
+                y cómo maneja la caché durante install, activate y fetch.
+              </p>
+              <div class="actions">
+                <button id="reload-btn" class="primary-btn" type="button">Recargar</button>
+                <button id="update-btn" class="secondary-btn" type="button">Actualizar SW</button>
+              </div>
+            </section>
+
+            <section class="stats-grid">
+              <article class="card stat-card">
+                <p class="card-label">Evento</p>
+                <h3>install</h3>
+                <p>Precarga los recursos críticos y activa el worker con <strong>skipWaiting()</strong>.</p>
+              </article>
+
+              <article class="card stat-card">
+                <p class="card-label">Evento</p>
+                <h3>activate</h3>
+                <p>Elimina cachés antiguas y toma control de la app mediante <strong>clients.claim()</strong>.</p>
+              </article>
+
+              <article class="card stat-card">
+                <p class="card-label">Evento</p>
+                <h3>fetch</h3>
+                <p>Usa caché primero y, si falla la red, entrega una respuesta desde la caché.</p>
+              </article>
+            </section>
+
+            <section class="card instructions">
+              <h3>Instrucciones de validación manual</h3>
+              <ol>
+                <li>Abre esta página desde un servidor local con HTTP o HTTPS.</li>
+                <li>En Chrome, accede a DevTools y abre la pestaña <strong>Application</strong>.</li>
+                <li>Revisa la sección <strong>Service Workers</strong> para comprobar que el worker está activo.</li>
+                <li>Ve a <strong>Cache Storage</strong> y verifica que se haya creado el caché del app shell.</li>
+                <li>Activa <strong>Offline</strong> en la pestaña Network y recarga para comprobar la caché.</li>
+              </ol>
+            </section>
+          </div>
+
+          <!-- Vista Instalación -->
+          <div id="view-install" class="view-section" hidden>
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Paso 1: Instalación</p>
+                <h2>Registro y Evento Install</h2>
+              </div>
+              <p>
+                El navegador registra el archivo <code>sw.js</code> asíncronamente desde <code>app.js</code>.
+                Durante la instalación, el Service Worker ejecuta el evento <code>install</code> y almacena en caché el App Shell.
+              </p>
+              <div class="code-preview">// Registro en app.js
+navigator.serviceWorker.register('./sw.js')
+  .then(reg => console.log('Registrado:', reg.scope));
+
+// En sw.js
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open('ejercicio3-cache-v1')
+      .then(cache => cache.addAll(APP_SHELL))
+  );
+});</div>
+              <div class="actions">
+                <button id="check-reg-btn" class="primary-btn" type="button">Verificar registro activo</button>
+              </div>
+              <p id="reg-info" class="card-label" style="font-size:0.9rem; color:var(--text);"></p>
+            </section>
+          </div>
+
+          <!-- Vista Ciclo de vida -->
+          <div id="view-lifecycle" class="view-section" hidden>
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Paso 2: Estados</p>
+                <h2>Ciclo de Vida Completo</h2>
+              </div>
+              <p>
+                Un Service Worker pasa por diferentes fases independientes del hilo principal de la página.
+              </p>
+              <div class="lifecycle-stepper">
+                <div class="step-box" id="step-registering">
+                  <h4>1. Registrando</h4>
+                  <p>El navegador descarga y analiza el script sw.js.</p>
+                </div>
+                <div class="step-box" id="step-installing">
+                  <h4>2. Instalando</h4>
+                  <p>Ejecuta evento install y guarda archivos en caché.</p>
+                </div>
+                <div class="step-box" id="step-waiting">
+                  <h4>3. En espera</h4>
+                  <p>Espera cierre de pestañas o skipWaiting().</p>
+                </div>
+                <div class="step-box" id="step-activating">
+                  <h4>4. Activando</h4>
+                  <p>Limpia versiones viejas de caché en activate.</p>
+                </div>
+                <div class="step-box" id="step-active">
+                  <h4>5. Activo / Control</h4>
+                  <p>Intercepta peticiones fetch y controla la app.</p>
+                </div>
+              </div>
+              <div class="actions">
+                <button id="inspect-lifecycle-btn" class="primary-btn" type="button">Comprobar estado en vivo</button>
+              </div>
+              <p id="lifecycle-info" class="card-label" style="font-size:0.9rem; color:var(--text);"></p>
+            </section>
+          </div>
+
+          <!-- Vista Offline -->
+          <div id="view-offline" class="view-section" hidden>
+            <section class="hero card">
+              <div>
+                <p class="eyebrow">Paso 3: Recuperación</p>
+                <h2>Manejo de Estado Offline y Fetch</h2>
+              </div>
+              <p>
+                El evento <code>fetch</code> intercepta las solicitudes de red. Si el usuario pierde conexión,
+                el Service Worker entrega la respuesta previamente guardada en la Cache API.
+              </p>
+              <div class="card" style="background: rgba(15,23,42,0.6);">
+                <p class="card-label">Estado de conexión del navegador</p>
+                <p id="network-status" style="font-size: 1.1rem; margin: 0;"></p>
+              </div>
+              <div class="actions">
+                <button id="test-cache-btn" class="primary-btn" type="button">Probar petición a caché</button>
+              </div>
+              <p id="test-fetch-result" class="card-label" style="font-size:0.9rem; color:var(--text);"></p>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
