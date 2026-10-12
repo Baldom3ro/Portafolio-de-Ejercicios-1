@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="description" content="Maquetado App Shell con Splash Screen Nativa" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>App Shell & Splash Screen PWA</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Splash Screen Visible en Escritorio y Móvil -->
+  <div id="desktop-splash-screen">
+    <div class="desktop-splash-box">
+      <img src="icon-512.png" alt="App Icon" class="desktop-splash-icon" />
+      <h1 class="desktop-splash-text">AppShell PWA</h1>
+      <div class="desktop-splash-loader"></div>
+    </div>
+  </div>
+
+  <div id="app-layout">
+    <!-- Header -->
+    <header id="app-header">
+      <div class="header-left">
+        <button id="nav-toggle" class="btn-icon" aria-label="Alternar menú">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="brand">
+          <span class="brand-logo">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M12 2L2 12l10 10 10-10L12 2zm0 4.5l5.5 5.5-5.5 5.5-5.5-5.5L12 6.5z"/>
+            </svg>
+          </span>
+          <span class="brand-title">AppShell PWA</span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <span class="status-indicator">
+          <span class="status-dot"></span>
+          <span class="status-text">Shell Activo</span>
+        </span>
+      </div>
+
+      <div class="header-right">
+        <button id="btn-install" class="btn-primary" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Instalar App</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="layout-body">
+      <!-- Menú de Navegación -->
+      <nav id="app-nav">
+        <div class="nav-section-title">MENÚ PRINCIPAL</div>
+        <ul class="nav-list">
+          <li class="nav-item active" data-view="dashboard">
+            <a href="#dashboard">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Inicio / Panel</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="devtools">
+            <a href="#devtools">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+              <span>Prueba DevTools</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="splash">
+            <a href="#splash">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              <span>Splash Screen</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="settings">
+            <a href="#settings">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Ajustes</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-footer">
+          <div class="nav-badge">
+            <span class="badge-dot"></span>
+            <span>PWA Lista</span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Overlay para móvil -->
+      <div id="nav-backdrop"></div>
+
+      <!-- Contenedor Principal -->
+      <main id="app-main">
+        <!-- Vista Dashboard -->
+        <section id="view-dashboard" class="content-view active">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">App Shell & PWA nativa</h1>
+              <p class="view-subtitle">Estructura base cargada instantáneamente desde caché local.</p>
+            </div>
+          </div>
+
+          <div class="grid-cards">
+            <!-- Tarjeta 1 -->
+            <div class="card stat-card">
+              <div class="card-icon blue">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+              </div>
+              <div class="card-info">
+                <span class="card-label">Arquitectura</span>
+                <span class="card-value">App Shell</span>
+              </div>
+              <p class="card-desc">Carga interfaz mínima de inmediato (Header, Nav, Shell).</p>
+            </div>
+
+            <!-- Tarjeta 2 -->
+            <div class="card stat-card">
+              <div class="card-icon emerald">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <div class="card-info">
+                <span class="card-label">Splash Screen</span>
+                <span class="card-value">Nativa Chrome</span>
+              </div>
+              <p class="card-desc">Generada por motor Chrome al instalarse vía Manifest.</p>
+            </div>
+
+            <!-- Tarjeta 3 -->
+            <div class="card stat-card">
+              <div class="card-icon purple">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+              </div>
+              <div class="card-info">
+                <span class="card-label">Diseño</span>
+                <span class="card-value">100% Responsivo</span>
+              </div>
+              <p class="card-desc">Adaptable a pantallas móviles, tabletas y computadoras.</p>
+            </div>
+          </div>
+
+          <!-- Guía de comprobación en DevTools -->
+          <div class="card guide-card">
+            <h2 class="guide-title">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              Instrucciones para validar en Chrome DevTools
+            </h2>
+            <div class="guide-steps">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                  <strong>Abrir DevTools:</strong> Presiona <kbd>F12</kbd> o <kbd>Ctrl + Shift + I</kbd> en Google Chrome.
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                  <strong>Pestaña Application:</strong> Ir a la pestaña <em>Application</em> &gt; <em>Manifest</em>.
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-text">
+                  <strong>Comprobar Splash Screen nativa:</strong> En la sección <em>Icons</em> y visualización inferior, Chrome muestra la vista previa del <strong>Splash Screen</strong> nativo generado a partir del icono de 512px y el color de fondo <code>#0f172a</code>.
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">4</div>
+                <div class="step-text">
+                  <strong>Simular instalación:</strong> Clic en el enlace <em>Install app</em> en la parte superior del panel Manifest o en la barra de direcciones de Chrome.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Vista DevTools / Detalles -->
+        <section id="view-devtools" class="content-view">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Verificación Chrome DevTools</h1>
+              <p class="view-subtitle">Propiedades requeridas por Chrome para generar el Splash Screen.</p>
+            </div>
+          </div>
+
+          <div class="card detail-card">
+            <table class="manifest-table">
+              <thead>
+                <tr>
+                  <th>Propiedad Manifest</th>
+                  <th>Valor Actual</th>
+                  <th>Efecto en Splash Screen Nativo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>name</code></td>
+                  <td><strong>App Shell PWA</strong></td>
+                  <td>Texto mostrado debajo del ícono durante carga nativa</td>
+                </tr>
+                <tr>
+                  <td><code>background_color</code></td>
+                  <td><code>#0f172a</code></td>
+                  <td>Color de fondo de la pantalla completa del Splash</td>
+                </tr>
+                <tr>
+                  <td><code>theme_color</code></td>
+                  <td><code>#2563eb</code></td>
+                  <td>Color de la barra de estado del sistema operativo</td>
+                </tr>
+                <tr>
+                  <td><code>icons (512x512)</code></td>
+                  <td><code>icon-512.png</code></td>
+                  <td>Ícono central escalado en el centro del Splash nativo</td>
+                </tr>
+                <tr>
+                  <td><code>display</code></td>
+                  <td><code>standalone</code></td>
+                  <td>Elimina barras del navegador simulando app nativa</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Vista Splash Simulator -->
+        <section id="view-splash" class="content-view">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Simulador Visual Splash Screen</h1>
+              <p class="view-subtitle">Previsualización de cómo luce el Splash Screen nativo en el dispositivo.</p>
+            </div>
+            <button id="btn-replay-splash" class="btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6"></path>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              <span>Reiniciar Simulación</span>
+            </button>
+          </div>
+
+          <div class="splash-preview-container">
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div id="simulated-splash" class="phone-screen splash-state">
+                <div class="splash-content">
+                  <img src="icon-512.png" alt="App Icon" class="splash-icon-img" />
+                  <div class="splash-app-name">AppShell PWA</div>
+                  <div class="splash-loader"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Vista Settings -->
+        <section id="view-settings" class="content-view">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Ajustes & Estado del Service Worker</h1>
+              <p class="view-subtitle">Control de caché y estado de registro offline.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="setting-row">
+              <div>
+                <strong>Service Worker Registrado</strong>
+                <p id="sw-status-label" class="setting-desc">Verificando estado...</p>
+              </div>
+              <span id="sw-status-badge" class="badge">Iniciando</span>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Caché App Shell</strong>
+                <p class="setting-desc">Almacena HTML, CSS, JS e iconos para carga instantánea.</p>
+              </div>
+              <button id="btn-clear-cache" class="btn-secondary">Vaciar Caché</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
