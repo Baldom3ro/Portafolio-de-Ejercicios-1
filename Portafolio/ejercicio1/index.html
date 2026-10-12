@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#3b82f6">
+  <meta name="description" content="PWA configurada con Web App Manifest y metadatos de instalación">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MiPWA">
+  
+  <title>PWA - Web App Manifest</title>
+  
+  <!-- Enlace al Web App Manifest -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: rgba(22, 30, 49, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-color: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.35);
+      --accent-secondary: #06b6d4;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.12) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1.25rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 780px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      color: #60a5fa;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background: #3b82f6;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #3b82f6;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      background: linear-gradient(135deg, #ffffff 30%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .status-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.5rem;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .meta-item {
+      background: rgba(15, 23, 42, 0.5);
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .meta-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .meta-value {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #e2e8f0;
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .color-preview {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      display: inline-block;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .icons-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .icon-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .icon-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .icon-wrapper {
+      background: #0f172a;
+      padding: 0.75rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .icon-preview-192 {
+      width: 96px;
+      height: 96px;
+      border-radius: 0.75rem;
+      object-fit: contain;
+    }
+
+    .icon-preview-512 {
+      width: 128px;
+      height: 128px;
+      border-radius: 1rem;
+      object-fit: contain;
+    }
+
+    .icon-meta {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+
+    .icon-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: white;
+      border: none;
+      padding: 0.85rem 1.6rem;
+      border-radius: 0.75rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 20px var(--accent-glow);
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid var(--card-border);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(51, 65, 85, 0.8);
+      box-shadow: none;
+    }
+
+    #installPrompt {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        <span>PWA Manifest Configurado</span>
+      </div>
+      <h1>Metadatos de Instalación</h1>
+      <p class="subtitle">Ejercicio 1: Web App Manifest enlazado con configuración de propiedades e iconos PNG de alta resolución.</p>
+    </header>
+
+    <!-- Estado de Propiedades Manifest -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Propiedades del Manifest</h2>
+        <span class="status-pill" id="manifestStatus">Enlazado & Activo</span>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">name</div>
+          <div class="meta-value">Mi Aplicación PWA</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">short_name</div>
+          <div class="meta-value">MiPWA</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">start_url</div>
+          <div class="meta-value">./index.html</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">display</div>
+          <div class="meta-value">standalone</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">theme_color</div>
+          <div class="meta-value">
+            <span class="color-preview" style="background-color: #3b82f6;"></span>
+            #3b82f6
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">background_color</div>
+          <div class="meta-value">
+            <span class="color-preview" style="background-color: #0f172a;"></span>
+            #0f172a
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paquete de Iconos -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Paquete de Iconos PNG</h2>
+        <span class="status-pill">192x192 & 512x512</span>
+      </div>
+      <div class="icons-container">
+        <div class="icon-card">
+          <div class="icon-wrapper">
+            <img class="icon-preview-192" src="./icons/icon-192.png" alt="Icono 192x192 px">
+          </div>
+          <div class="icon-meta">icon-192.png</div>
+          <div class="icon-sub">192x192 px • Móvil / Homescreen</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="icon-wrapper">
+            <img class="icon-preview-512" src="./icons/icon-512.png" alt="Icono 512x512 px">
+          </div>
+          <div class="icon-meta">icon-512.png</div>
+          <div class="icon-sub">512x512 px • Splash / Alta Densidad</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="actions">
+      <button id="installBtn" class="btn" style="display: none;">Instalar PWA</button>
+      <a href="./manifest.json" target="_blank" class="btn btn-secondary">Ver manifest.json</a>
+    </div>
+  </div>
+
+  <script>
+    // Manejo de evento beforeinstallprompt
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('Resultado de instalación:', outcome);
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+
+    // Detectar si ya corre standalone
+    window.addEventListener('DOMContentLoaded', () => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+      if (isStandalone) {
+        document.getElementById('manifestStatus').textContent = 'Modo Standalone';
+      }
+    });
+  </script>
+</body>
+</html>
